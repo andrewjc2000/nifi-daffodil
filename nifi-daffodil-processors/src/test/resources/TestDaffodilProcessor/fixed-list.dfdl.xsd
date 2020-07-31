@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ Copyright 2018 Tresys Technology, LLC
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:fn="http://www.w3.org/2005/xpath-functions"
+           xmlns:dfdl="http://www.ogf.org/dfdl/dfdl-1.0/" xmlns:ex="http://example.com"
+           targetNamespace="http://example.com" elementFormDefault="unqualified">
+
+    <xs:include schemaLocation="org/apache/daffodil/xsd/DFDLGeneralFormat.dfdl.xsd" />
+
+    <xs:annotation>
+        <xs:appinfo source="http://www.ogf.org/dfdl/">
+
+            <dfdl:defineEscapeScheme name="csvBlockQuoteEscaped">
+                <dfdl:escapeScheme escapeKind="escapeBlock" escapeBlockStart='"' escapeBlockEnd='"'
+                                   escapeEscapeCharacter='\' extraEscapedCharacters="" generateEscapeBlock="whenNeeded" />
+            </dfdl:defineEscapeScheme>
+
+            <dfdl:format ref="ex:GeneralFormat" separator="" initiator=""
+                         terminator="" leadingSkip='0' textTrimKind="none" initiatedContent="no"
+                         alignment="implicit" alignmentUnits="bits" trailingSkip="0" ignoreCase="no"
+                         separatorPosition="infix" occursCountKind="implicit"
+                         emptyValueDelimiterPolicy="both" representation="text" textNumberRep="standard"
+                         lengthKind="delimited" encoding="ASCII" escapeSchemeRef="ex:csvBlockQuoteEscaped"
+                         separatorSuppressionPolicy="anyEmpty" outputNewLine="%LF;" />
+            <dfdl:defineVariable name="valueToOverride" defaultValue="0" type="xs:int" external="true"/>
+        </xs:appinfo>
+    </xs:annotation>
+
+    <xs:element name="file">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="data" dfdl:occursCountKind="implicit">
+                    <xs:complexType>
+                        <xs:sequence dfdl:separator=",">
+                            <xs:element name="dataElements" type="xs:string" maxOccurs="7" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="varValue" type="xs:int" dfdl:inputValueCalc="{ $ex:valueToOverride }" dfdl:occursCountKind="expression"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>
